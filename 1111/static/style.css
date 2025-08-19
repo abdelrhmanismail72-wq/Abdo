@@ -1,0 +1,169 @@
+:root {
+  --primary: #4a148c;
+  --secondary: #3e0f7a;
+  --main-bg: #f7f9fa;
+  --font-main: 'Cairo', 'Tajawal', 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+  background: var(--main-bg);
+  font-family: var(--font-main);
+  direction: rtl;
+}
+
+header {
+  background: var(--primary);
+  color: #fff;
+}
+
+a { text-decoration: none; }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* General Components */
+.card {
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.btn-success {
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
+    margin: 1rem 0;
+}
+
+.text-primary { color: var(--primary) !important; }
+.bg-primary { background-color: var(--primary) !important; }
+
+.badge {
+    font-size: 0.8rem;
+    padding: 0.4em 0.8em;
+}
+
+.table th {
+    font-weight: 600;
+    background-color: #f8f9fa;
+    border-top: none;
+}
+
+.modal-header, .modal-footer {
+    border-color: #dee2e6;
+}
+
+/* Profile Page */
+.avatar-circle {
+    width: 100px;
+    height: 100px;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    border: 3px solid var(--primary);
+}
+
+/* Lesson Detail Page */
+.video-container {
+    background-color: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.video-player {
+    width: 100%;
+    height: 100%;
+    outline: none;
+}
+
+.lesson-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+}
+
+.lesson-content h3 {
+    color: var(--primary);
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Footer */
+footer {
+    background-color: #f1f1f1; /* لون خلفية رمادي فاتح */
+    padding: 1.5rem 0;
+    color: #555; /* لون نص أغمق */
+    border-top: 1px solid #e7e7e7;
+}
+
+footer .social-icons a {
+    color: #555; /* لون الأيقونات الافتراضي */
+    font-size: 1.2rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+footer .social-icons a:hover {
+    color: var(--primary); /* تغيير اللون عند المرور */
+    transform: translateY(-2px);
+}
+
+@media (max-width: 767px) {
+    footer .row > div {
+        text-align: center !important;
+        margin-bottom: 0.75rem; /* إضافة هامش للفصل بين النص والأيقونات */
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .video-container {
+        margin: 0 -15px;
+        border-radius: 0;
+    }
+    
+    .container {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    
+    .card {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        margin-bottom: 1rem;
+    }
+
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+}
