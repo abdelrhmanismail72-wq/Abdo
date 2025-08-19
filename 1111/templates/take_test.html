@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% block content %}
+ <head>
+	<style>
+ /* الخطوط والألوان الأساسية */
+body {
+  font-family: "Cairo", sans-serif;
+  background: linear-gradient(135deg, #e0f7fa, #ede7f6);
+  margin: 0;
+  padding: 15px;
+  color: #333;
+}
+
+/* العنوان */
+h2 {
+  text-align: center;
+  color: #4a148c;
+  margin-bottom: 20px;
+  font-size: 1.6rem;
+}
+
+/* المؤقت */
+#timer {
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  background: #fff3e0;
+  border: 2px solid #ff9800;
+  border-radius: 10px;
+  max-width: 300px;
+  margin: 0 auto 20px auto;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  font-size: 1rem;
+}
+
+/* الصندوق الخاص بكل سؤال */
+.mb-4 {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.mb-4:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+/* السؤال */
+.mb-4 p {
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #2e2e2e;
+  font-size: 1rem;
+}
+
+/* الصورة */
+.mb-4 img {
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  max-width: 100%;
+  height: auto;
+}
+
+/* الاختيارات */
+label {
+  display: block;
+  background: #f9f9f9;
+  margin: 5px 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+  font-size: 0.95rem;
+}
+
+label:hover {
+  background: #e3f2fd;
+  border-color: #2196f3;
+}
+
+input[type="radio"] {
+  margin-right: 8px;
+}
+
+/* زر إنهاء الاختبار */
+button[type="submit"] {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #43a047, #1b5e20);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+button[type="submit"]:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+/* ⚡ تحسين العرض على الموبايل */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  #timer {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .mb-4 {
+    padding: 12px 15px;
+  }
+
+  label {
+    font-size: 0.9rem;
+    padding: 7px 10px;
+  }
+
+  button[type="submit"] {
+    font-size: 1rem;
+    padding: 10px;
+  }
+}
+
+/* ⚡ تحسين العرض على الشاشات الكبيرة */
+@media (min-width: 1200px) {
+  body {
+    padding: 40px 120px;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  .mb-4 {
+    padding: 20px 30px;
+  }
+
+  label {
+    font-size: 1rem;
+  }
+}
+
+	</style>
+</head>
+
+<h2>الاختبار: {{ test.title }}</h2>
+  <div id="timer" style="font-size:1.2rem;color:#d32f2f;margin-bottom:15px;"></div>
+  <form method="post">{% csrf_token %}
+    {% for q in questions %}
+      <div class="mb-4">
+        <p>{{ forloop.counter }}.
+          {% if q.text %}{{ q.text }}{% endif %}
+        </p>
+        {% if q.image %}
+          <img src="{{ q.image.url }}" alt="صورة السؤال" style="max-width:150px;width:100%;height:auto;display:block;">
+        {% endif %}
+        {% for choice in q.get_choices %}
+          <label>
+            <input type="radio" name="{{ q.id }}" value="{{ forloop.counter }}">
+            {{ choice }}
+          </label><br>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-success">انهاء الاختبار</button>
+  </form>
+  <script>
+    // حساب الوقت بالوحدة المختارة
+    var time = {{ test.time_limit }};
+    var unit = "{{ test.time_unit }}";
+    var seconds = time;
+    if (unit === "minutes") seconds = time * 60;
+    if (unit === "hours") seconds = time * 3600;
+    var timerDiv = document.getElementById('timer');
+    function updateTimer() {
+      var m = Math.floor(seconds / 60);
+      var s = seconds % 60;
+      timerDiv.textContent = "الوقت المتبقي: " + m + " دقيقة " + s + " ثانية";
+      if (seconds <= 0) {
+        document.forms[0].submit();
+      } else {
+        seconds--;
+        setTimeout(updateTimer, 1000);
+      }
+    }
+    updateTimer();
+  </script>
+{% endblock %}

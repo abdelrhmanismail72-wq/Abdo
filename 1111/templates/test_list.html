@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}الاختبارات المتاحة - منصة التعليم{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm animate-fade-in">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h3 class="mb-0">الاختبارات المتاحة</h3>
+                </div>
+                <div class="card-body p-4">
+                    {% if tests %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>اسم الاختبار</th>
+                                        <th>الدرس</th>
+                                        <th>عدد الأسئلة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for test in tests %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ test.title }}</td>
+                                            <td>{{ test.lesson.title }}</td>
+                                            <td>{{ test.questions.count }}</td>
+                                            <td>
+                                                <a href="{% url 'take_test' test.id %}" class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-play-circle me-1"></i> بدء الاختبار
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info text-center">
+                            <i class="fas fa-info-circle fa-2x mb-3"></i>
+                            <h5>لا توجد اختبارات متاحة حاليًا</h5>
+                            <p class="mb-0">سيتم إضافة الاختبارات قريبًا</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table th {
+        font-weight: 600;
+        background-color: #f8f9fa;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(74, 20, 140, 0.05);
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .alert-info {
+        background-color: #e6f3ff;
+        border-color: #b8daff;
+        color: #004085;
+    }
+    
+    .fa-info-circle {
+        color: #0d6efd;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+
+{% block title %}تسجيل طالب جديد - منصة التعليم{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-lg animate-fade-in">
+        <div class="card-header bg-primary text-white text-center py-3">
+          <h3 class="mb-0">إنشاء حساب طالب جديد</h3>
+        </div>
+        <div class="card-body p-4">
+          <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger" role="alert">
+                {% for error in form.non_field_errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
+            
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <div class="form-group">
+                  <label for="full_name" class="form-label">
+                    <i class="fas fa-user-tag me-2"></i>الاسم الكامل
+                    <span class="text-danger">*</span>
+                  </label>
+                  <input type="text" class="form-control" id="full_name" name="full_name" required>
+                  <div class="invalid-feedback">
+                    الرجاء إدخال الاسم الكامل
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6 mb-4">
+                <div class="form-group">
+                  <label for="username" class="form-label">
+                    <i class="fas fa-user me-2"></i>اسم المستخدم
+                    <span class="text-danger">*</span>
+                  </label>
+                  <input type="text" class="form-control" id="username" name="username" required>
+                  <div class="invalid-feedback">
+                    الرجاء إدخال اسم المستخدم
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6 mb-4">
+                <div class="form-group">
+                  <label for="email" class="form-label">
+                    <i class="fas fa-envelope me-2"></i>البريد الإلكتروني
+                    <span class="text-danger">*</span>
+                  </label>
+                  <input type="email" class="form-control" id="email" name="email" required>
+                  <div class="invalid-feedback">
+                    الرجاء إدخال بريد إلكتروني صحيح
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <div class="form-group">
+                  <label for="password" class="form-label">
+                    <i class="fas fa-lock me-2"></i>كلمة المرور
+                    <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <input type="password" class="form-control" id="password" name="password" required 
+                           pattern=".{4,}" title="يجب أن تحتوي كلمة المرور على 4 أحرف على الأقل">
+                    <button class="btn btn-outline-secondary toggle-password" type="button" data-toggle="password" data-target="#password">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                  <small class="form-text text-muted">يجب أن تحتوي كلمة المرور على 4 أحرف على الأقل</small>
+                  <div class="invalid-feedback">
+                    الرجاء إدخال كلمة مرور صالحة
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6 mb-4">
+                <div class="form-group">
+                  <label for="confirm_password" class="form-label">
+                    <i class="fas fa-check-circle me-2"></i>تأكيد كلمة المرور
+                    <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <input type="password" class="form-control" id="confirm_password" required>
+                    <button class="btn btn-outline-secondary toggle-password" type="button" data-toggle="password" data-target="#confirm_password">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                  <div class="invalid-feedback">
+                    كلمة المرور غير متطابقة
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-check mb-4">
+              <input class="form-check-input" type="checkbox" id="terms" required>
+              <label class="form-check-label" for="terms">
+                أوافق على <a href="#" class="text-primary">الشروط والأحكام</a> و <a href="#" class="text-primary">سياسة الخصوصية</a>
+              </label>
+              <div class="invalid-feedback">
+                يجب الموافقة على الشروط والأحكام
+              </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+              <button class="btn btn-primary btn-lg" type="submit">
+                <i class="fas fa-user-plus me-2"></i>إنشاء الحساب
+              </button>
+            </div>
+            
+            <div class="text-center mt-4">
+              <p class="mb-0">لديك حساب بالفعل؟ 
+                <a href="{% url 'login' %}" class="text-primary fw-bold">
+                  سجل الدخول
+                </a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block extra_js %}
+<script>
+// Password toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle click on toggle password buttons
+    document.addEventListener('click', function(e) {
+        // Check if the clicked element is a toggle button or its icon
+        const toggleBtn = e.target.closest('[data-toggle="password"]');
+        if (!toggleBtn) return;
+        
+        e.preventDefault();
+        
+        // Get the target input
+        const targetId = toggleBtn.getAttribute('data-target');
+        const input = document.querySelector(targetId);
+        if (!input) return;
+        
+        // Toggle the input type
+        const type = input.type === 'password' ? 'text' : 'password';
+        input.type = type;
+        
+        // Update the icon
+        const icon = toggleBtn.querySelector('i');
+        if (icon) {
+            icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+        }
+    });
+});
+
+// Form validation
+(function () {
+  'use strict'
+  
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation')
+  
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms).forEach(function (form) {
+    form.addEventListener('submit', function (event) {
+      // Validate password
+      function validatePassword() {
+        // Check minimum length
+        var password = document.getElementById('password');
+        var confirmPassword = document.getElementById('confirm_password');
+        
+        if (password.value.length < 4) {
+          password.setCustomValidity('يجب أن تحتوي كلمة المرور على 4 أحرف على الأقل');
+          return false;
+        }
+        
+        // Check if passwords match
+        if (password.value !== confirmPassword.value) {
+          confirmPassword.setCustomValidity('كلمات المرور غير متطابقة');
+          return false;
+        } else {
+          password.setCustomValidity('');
+          confirmPassword.setCustomValidity('');
+          return true;
+        }
+      }
+      
+      if (!validatePassword()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+      
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
+
+// Toggle password visibility
+document.querySelectorAll('.toggle-password').forEach(function(button) {
+  button.addEventListener('click', function() {
+    const input = this.parentElement.querySelector('input');
+    const icon = this.querySelector('i');
+    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+    input.setAttribute('type', type);
+    icon.classList.toggle('fa-eye');
+    icon.classList.toggle('fa-eye-slash');
+  });
+});
+
+</script>
+{% endblock %}
+
+<style>
+/* Custom styles for the registration page */
+.card {
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.card-header {
+  background: linear-gradient(135deg, #4a148c, #7b1fa2);
+  border-bottom: none;
+  padding: 1.5rem;
+}
+
+.form-control {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #4a148c;
+  box-shadow: 0 0 0 0.25rem rgba(74, 20, 140, 0.25);
+}
+
+.btn-primary {
+  padding: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #4a148c, #7b1fa2);
+  border: none;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(74, 20, 140, 0.3);
+}
+
+.toggle-password {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+  background-color: #f8f9fa;
+}
+
+.input-group-text {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.was-validated .form-control:invalid, 
+.form-control.is-invalid {
+  border-color: #dc3545;
+  padding-right: calc(1.5em + 0.75rem);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+/* Animation */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card {
+    margin: 1rem;
+  }
+  
+  .btn-primary {
+    width: 100%;
+  }
+}
+</style>
+{% endblock %}

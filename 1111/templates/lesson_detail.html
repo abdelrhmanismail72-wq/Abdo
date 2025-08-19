@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h4 mb-0">{{ lesson.title }}</h2>
+                </div>
+                <div class="card-body">
+                    {% if lesson.lesson_type == 'text' %}
+                        <div class="lesson-content">
+                            {{ lesson.content|linebreaks }}
+                        </div>
+                    
+                    {% elif lesson.lesson_type == 'video' %}
+                        <div class="video-container mb-4">
+                            <div class="ratio ratio-16x9">
+                                <video class="video-player" controlsList="nodownload" oncontextmenu="return false;" controls preload="metadata">
+                                    <source src="{% url 'stream_video' lesson.id %}" type="video/mp4">
+                                    متصفحك لا يدعم تشغيل الفيديو. يرجى تحديث المتصفح أو استخدام متصفح آخر.
+                                </video>
+                            </div>
+                        </div>
+                    
+                    {% elif lesson.lesson_type == 'text_video' %}
+                        {% if lesson.text_position == 'top' %}
+                            <div class="lesson-content mb-4">
+                                {{ lesson.content|linebreaks }}
+                            </div>
+                            <div class="video-container">
+                                <div class="ratio ratio-16x9">
+                                    <video class="video-player" controlsList="nodownload" oncontextmenu="return false;" controls preload="metadata">
+                                        <source src="{% url 'stream_video' lesson.id %}" type="video/mp4">
+                                        متصفحك لا يدعم تشغيل الفيديو. يرجى تحديث المتصفح أو استخدام متصفح آخر.
+                                    </video>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="video-container mb-4">
+                                <div class="ratio ratio-16x9">
+                                    <video class="video-player" controlsList="nodownload" oncontextmenu="return false;" controls preload="metadata">
+                                        <source src="{% url 'stream_video' lesson.id %}" type="video/mp4">
+                                        متصفحك لا يدعم تشغيل الفيديو. يرجى تحديث المتصفح أو استخدام متصفح آخر.
+                                    </video>
+                                </div>
+                            </div>
+                            <div class="lesson-content">
+                                {{ lesson.content|linebreaks }}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if lesson.pdf_file %}
+                <div class="text-center mb-4">
+                    <a href="{{ lesson.pdf_file.url }}" class="btn btn-primary" target="_blank" download>
+                        <i class="fas fa-file-pdf me-2"></i>تحميل ملف الشرح (PDF)
+                    </a>
+                </div>
+            {% endif %}
+
+            {% if test %}
+                <div class="text-center">
+                    <a href="{% url 'take_test' test.id %}" class="btn btn-success btn-lg">
+                        <i class="fas fa-play-circle me-2"></i>ابدأ الاختبار: {{ test.title }}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Add event listeners for video player
+document.addEventListener('DOMContentLoaded', function() {
+    const videos = document.querySelectorAll('video');
+    
+    videos.forEach(video => {
+        // Add loading indicator
+        video.addEventListener('waiting', function() {
+            // You can add a loading spinner here if needed
+        });
+        
+        // Handle when video can play
+        video.addEventListener('canplay', function() {
+            // Hide loading indicator
+        });
+    });
+});
+</script>
+{% endblock %}

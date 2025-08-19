@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>إضافة / تعديل درس</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if form.errors %}
+      <div class="alert alert-danger">
+        يرجى تصحيح الأخطاء التالية:
+        <ul>
+          {% for field, errors in form.errors.items %}
+            <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+    <div class="mb-3">
+      <label>عنوان الدرس:</label>
+      {{ form.title }}
+    </div>
+    <div class="mb-3">
+      <label>نوع الدرس:</label>
+      {{ form.lesson_type }}
+    </div>
+    <div class="mb-3">
+      <label>النص:</label>
+      {{ form.content }}
+    </div>
+    <div class="mb-3">
+      <label>ملف الفيديو:</label>
+      {{ form.video_file }}
+    </div>
+    <div class="mb-3">
+      <label>ملف PDF:</label>
+      {{ form.pdf_file }}
+    </div>
+    <div class="mb-3">
+      <label>مكان النص بالنسبة للفيديو:</label>
+      {{ form.text_position }}
+    </div>
+    <div class="form-check mb-3">
+      {{ form.is_hidden }}
+      <label class="form-check-label" for="{{ form.is_hidden.id_for_label }}">
+        {{ form.is_hidden.label }}
+      </label>
+      <small class="form-text text-muted">{{ form.is_hidden.help_text }}</small>
+    </div>
+    <div class="form-check mb-3">
+      <label class="form-check-label" for="id_add_test">إضافة اختبار مرتبط بهذا الدرس</label>
+      {{ form.add_test }}
+    </div>
+    <button type="submit">حفظ</button>
+  </form>
+{% endblock %}

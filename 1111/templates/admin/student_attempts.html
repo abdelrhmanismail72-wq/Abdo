@@ -1,0 +1,131 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .attempt-card {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background: #fff;
+        box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    }
+    .attempt-card h3 {
+        margin-top: 0;
+        color: #333;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+    .attempt-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 10px;
+    }
+    .info-item {
+        flex: 1;
+        min-width: 200px;
+    }
+    .info-label {
+        font-weight: bold;
+        color: #666;
+        display: block;
+        margin-bottom: 3px;
+    }
+    .info-value {
+        color: #333;
+    }
+    .score {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #2e7d32;
+    }
+    .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #417690;
+        text-decoration: none;
+    }
+    .back-link:hover {
+        text-decoration: underline;
+    }
+    .attempt-actions {
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 1px solid #eee;
+    }
+    .attempt-actions a {
+        margin-right: 10px;
+        color: #417690;
+        text-decoration: none;
+    }
+    .attempt-actions a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    {% if show_back %}
+        <a href="{% url 'admin:student_scores' %}" class="back-link">
+            &larr; العودة إلى قائمة الطلاب
+        </a>
+    {% endif %}
+    
+    <h1>{{ title }}</h1>
+    
+    {% if attempts %}
+        <div class="module">
+            {% for attempt in attempts %}
+                <div class="attempt-card">
+                    <h3>{{ attempt.test.title }}</h3>
+                    <div class="attempt-info">
+                        <div class="info-item">
+                            <span class="info-label">الدرجة:</span>
+                            <span class="info-value score">{{ attempt.score }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">تاريخ الإكمال:</span>
+                            <span class="info-value">
+                                {% if attempt.completed_at %}
+                                    {{ attempt.completed_at|date:"Y-m-d H:i" }}
+                                {% else %}
+                                    غير مكتمل
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">حالة الاختبار:</span>
+                            <span class="info-value">
+                                {% if attempt.completed %}
+                                    <span style="color: #2e7d32;">مكتمل</span>
+                                {% else %}
+                                    <span style="color: #d32f2f;">غير مكتمل</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="attempt-actions">
+                        <a href="{% url 'admin:core_attempt_change' attempt.id %}">
+                            عرض التفاصيل الكاملة
+                        </a>
+                        {% if attempt.completed %}
+                            <a href="{% url 'review_answers' attempt.id %}" target="_blank">
+                                مراجعة الإجابات
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-attempts">
+            <p>لا توجد محاولات مسجلة لهذا الطالب.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

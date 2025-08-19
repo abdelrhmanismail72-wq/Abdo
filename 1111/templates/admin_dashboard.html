@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">لوحة تحكم الأدمن</h2>
+<h3>قائمة المستخدمين</h3>
+<div class="table-responsive">
+  <table class="table table-striped table-bordered align-middle">
+    <thead class="table-primary">
+      <tr>
+        <th>المستخدم</th><th>تقدم (محاولات مكتملة)</th><th>مجموع الدرجات</th><th>إجراءات</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for up in users_progress %}
+        <tr>
+          <td>{{ up.username }}</td>
+          <td>{{ up.attempts_count }}</td>
+          <td>{{ up.total_score|default:0 }}</td>
+          <td>
+            {% if up.profile.role != 'admin' %}
+              <a class="btn btn-sm btn-outline-success" href="{% url 'promote_user' up.id %}">ترقية لأدمن</a>
+            {% else %}
+              <a class="btn btn-sm btn-outline-warning" href="{% url 'demote_user' up.id %}">إلغاء صلاحية أدمن</a>
+            {% endif %}
+            <a class="btn btn-sm btn-outline-secondary" href="{% url 'admin_set_password' up.id %}">تغيير كلمة السر</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<hr>
+<h3>الدروس</h3>
+<p><a class="btn btn-primary mb-2" href="{% url 'lesson_create' %}">أضف درس جديد</a></p>
+<ul class="list-group">
+  {% for l in lessons %}
+    <li class="list-group-item">
+      {{ l.title }} ({{ l.lesson_type }})
+      {% if l.pdf_file %} | <a href="{{ l.pdf_file.url }}">PDF</a> {% endif %}
+      {% if l.lesson_type == 'video' %} | <a href="{% url 'protected_video' l.id %}">تشغيل محمي</a> {% endif %}
+      {% with test=l.test_set.first %}
+        {% if test %}
+          | اختبار: <a href="{% url 'take_test' test.id %}">{{ test.title }}</a>
+          | <a href="{% url 'question_add' test.id %}">إضافة سؤال</a>
+        {% else %}
+          | <a href="{% url 'test_create_from_lesson' l.id %}">إضافة اختبار</a>
+        {% endif %}
+      {% endwith %}
+    </li>
+  {% empty %}
+    <li class="list-group-item">لا توجد دروس.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

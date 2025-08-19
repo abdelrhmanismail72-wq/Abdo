@@ -1,0 +1,473 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}الملف الشخصي - منصة التعليم{% endblock %}
+
+{% block content %}
+<div class="container py-3 py-md-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-center">
+                    <h3 class="h4 mb-3 mb-md-0">الملف الشخصي</h3>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                            <i class="fas fa-edit me-1"></i> تعديل البيانات
+                        </button>
+                        <button type="button" class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                            <i class="fas fa-key me-1"></i> تغيير كلمة المرور
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-3 p-md-4">
+                    <div class="row">
+                        <!-- الصورة والمعلومات الأساسية -->
+                        <div class="col-12 col-md-4 text-center mb-4 mb-md-0">
+                            <div class="avatar-circle mb-3 mx-auto">
+                                <i class="fas fa-user-circle fa-5x text-primary"></i>
+                            </div>
+                            <h4 class="h5 mb-1">{{ user.get_full_name|default:user.username }}</h4>
+                            <p class="text-muted small mb-3">{{ user.email }}</p>
+                            <div class="badge bg-primary">
+                                <i class="fas fa-user me-1"></i> {{ user.get_user_type_display|default:'مستخدم' }}
+                            </div>
+                        </div>
+                        
+                        <!-- الإحصائيات -->
+                        <div class="col-12 col-md-8">
+                            <div class="card border-0 shadow-sm mb-4">
+                                <div class="card-header bg-light">
+                                    <h5 class="h6 mb-0"><i class="fas fa-chart-line me-2 text-primary"></i>إحصائياتي</h5>
+                                </div>
+                                <div class="card-body p-2 p-md-3">
+                                    <div class="row g-2 text-center">
+                                        <div class="col-6 col-md-3">
+                                            <div class="stat-card p-2">
+                                                <div class="stat-value text-primary mb-1">{{ total_attempts|default:0 }}</div>
+                                                <div class="stat-label small">إجمالي المحاولات</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <div class="stat-card p-2">
+                                                <div class="stat-value text-success mb-1">
+                                                    {{ highest_score|default:0 }}%
+                                                </div>
+                                                <div class="stat-label small">أعلى نتيجة</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <div class="stat-card p-2">
+                                                <div class="stat-value text-info mb-1">
+                                                    {{ average_score|default:0 }}%
+                                                </div>
+                                                <div class="stat-label small">متوسط النتائج</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <div class="stat-card p-2">
+                                                <div class="stat-value text-info mb-1">
+                                                    {{ completed_lessons_count|default:0 }}
+                                                </div>
+                                                <div class="stat-label small">الدروس المكتملة</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <div class="stat-card p-2">
+                                                <div class="stat-value text-warning mb-1">
+                                                    {{ total_time_spent|default:'00:00' }}
+                                                </div>
+                                                <div class="stat-label small">وقت الدراسة</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- معلومات الحساب -->
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h5 class="h6 mb-0"><i class="fas fa-info-circle me-2 text-primary"></i>معلومات الحساب</h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-borderless mb-0">
+                                            <tr>
+                                                <td class="text-nowrap" width="40%">
+                                                    <i class="fas fa-user me-2 text-muted"></i> اسم المستخدم
+                                                </td>
+                                                <td class="fw-bold text-truncate" title="{{ user.username }}">
+                                                    {{ user.username }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-nowrap">
+                                                    <i class="fas fa-envelope me-2 text-muted"></i> البريد الإلكتروني
+                                                </td>
+                                                <td class="fw-bold text-truncate" title="{{ user.email|default:'-' }}">
+                                                    {{ user.email|default:'-' }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-nowrap">
+                                                    <i class="fas fa-calendar-alt me-2 text-muted"></i> تاريخ الانضمام
+                                                </td>
+                                                <td class="fw-bold">{{ user.date_joined|date:'Y/m/d' }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-nowrap">
+                                                    <i class="fas fa-sign-in-alt me-2 text-muted"></i> آخر تسجيل دخول
+                                                </td>
+                                                <td class="fw-bold">{{ user.last_login|date:'Y/m/d H:i'|default:'-' }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- سجل الاختبارات -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="h6 mb-0"><i class="fas fa-history me-2 text-primary"></i>سجل الاختبارات الأخيرة</h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if attempts %}
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>الاختبار</th>
+                                        <th>التاريخ</th>
+                                        <th>الدرجة</th>
+                                        <th>الحالة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for attempt in attempts|slice:":5" %}
+                                        <tr>
+                                            <td class="align-middle">{{ attempt.test.title }}</td>
+                                            <td class="align-middle">{{ attempt.completed_at|date:'Y/m/d' }}</td>
+                                            <td class="align-middle">
+                                                {% with total_questions=attempt.test.question_set.count %}
+                                                <span class="badge fs-6 py-2 {% if attempt.score_percentage >= 50 %}bg-success{% else %}bg-danger{% endif %}">
+                                                    {{ attempt.score_percentage }}% ({{ attempt.score|default:0 }}/{{ total_questions }})
+                                                </span>
+                                                {% endwith %}
+                                            </td>
+                                            <td class="align-middle">
+                                                <span class="badge bg-{% if attempt.completed %}success{% else %}warning{% endif %} py-2">
+                                                    {% if attempt.completed %}مكتمل{% else %}غير مكتمل{% endif %}
+                                                </span>
+                                            </td>
+                                            <td class="align-middle">
+                                                {% if not attempt.test.prevent_review or attempt.review_enabled %}
+                                                    <a href="{% url 'review_answers' attempt.id %}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-eye me-1"></i>عرض النتائج
+                                                    </a>
+                                                {% else %}
+                                                    <span class="badge bg-secondary py-2">المراجعة غير متاحة</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% if attempts.count > 5 %}
+                            <div class="text-center p-3 border-top">
+                                <a href="{% url 'test_attempts' %}" class="text-primary">
+                                    عرض جميع المحاولات <i class="fas fa-arrow-left"></i>
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center p-5">
+                            <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+                            <p class="text-muted mb-0">لا توجد محاولات اختبار حتى الآن</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProfileModalLabel">تعديل الملف الشخصي</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'profile_update' %}" id="profileForm">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label">الاسم الكامل</label>
+                        <input type="text" class="form-control" id="fullName" value="{{ user.get_full_name }}" name="full_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">البريد الإلكتروني</label>
+                        <input type="email" class="form-control" id="email" value="{{ user.email }}" name="email" required>
+                    </div>
+                    <div class="alert alert-info">
+                        <small>اترك حقلي كلمة المرور فارغين إذا كنت لا تريد تغيير كلمة المرور</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="currentPassword" class="form-label">كلمة المرور الحالية (مطلوبة لتغيير كلمة المرور)</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="currentPassword" name="current_password">
+                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="currentPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">كلمة المرور الجديدة (اختياري)</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="newPassword" name="new_password" minlength="4">
+                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="newPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-text text-muted">يجب أن تحتوي كلمة المرور على 4 أحرف على الأقل</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePasswordModalLabel">تغيير كلمة المرور</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="passwordChangeForm" method="post" action="{% url 'password_change' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="current_password" class="form-label">كلمة المرور الحالية</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="current_password" name="current_password" required>
+                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="current_password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password1" class="form-label">كلمة المرور الجديدة</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="new_password1" name="new_password1" minlength="4" maxlength="100" required>
+                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="new_password1">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-text text-muted">يجب أن تحتوي كلمة المرور على 4 أحرف أو أرقام على الأقل</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password2" class="form-label">تأكيد كلمة المرور الجديدة</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="new_password2" name="new_password2" minlength="4" maxlength="100" required>
+                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="new_password2">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">تغيير كلمة المرور</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Initialize tooltips and event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Bootstrap tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Handle profile form submission with AJAX
+        const profileForm = document.getElementById('profileForm');
+        if (profileForm) {
+            profileForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(profileForm);
+                const submitBtn = profileForm.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+                
+                // Show loading state
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> جاري الحفظ...';
+                
+                fetch(profileForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('success', data.message || 'تم تحديث الملف الشخصي بنجاح');
+                        // Close the modal after a short delay
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
+                        if (modal) {
+                            setTimeout(() => {
+                                modal.hide();
+                                window.location.reload();
+                            }, 1500);
+                        }
+                    } else {
+                        showAlert('danger', data.message || 'حدث خطأ أثناء تحديث الملف الشخصي');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('danger', 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.');
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                });
+            });
+        }
+
+        // Password visibility toggle using event delegation
+        document.addEventListener('click', function(e) {
+            // Check if the clicked element is a toggle-password button or its child icon
+            const toggleBtn = e.target.closest('.toggle-password');
+            if (toggleBtn) {
+                const targetId = toggleBtn.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                const icon = toggleBtn.querySelector('i');
+                
+                if (input) {
+                    // Toggle input type
+                    input.type = input.type === 'password' ? 'text' : 'password';
+                    
+                    // Toggle icon
+                    if (input.type === 'password') {
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    } else {
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    }
+                }
+            }
+        });
+
+        // Handle password change form submission
+        const passwordChangeForm = document.getElementById('passwordChangeForm');
+        if (passwordChangeForm) {
+            passwordChangeForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+                
+                // Disable submit button and show loading state
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> جاري التحميل...';
+                
+                // Send AJAX request
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success message
+                        showAlert('success', data.message);
+                        // Reset form
+                        this.reset();
+                        // Close modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
+                        modal.hide();
+                    } else {
+                        // Show error message
+                        showAlert('danger', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('danger', 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.');
+                })
+                .finally(() => {
+                    // Re-enable submit button and restore original text
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                });
+            });
+        }
+        
+        // Function to show alert message
+        function showAlert(type, message) {
+            // Remove any existing alerts
+            const existingAlerts = document.querySelectorAll('.alert-dismissible');
+            existingAlerts.forEach(alert => alert.remove());
+            
+            // Create new alert
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.role = 'alert';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            // Insert alert at the top of the container
+            const container = document.querySelector('.container.py-3');
+            if (container) {
+                container.insertBefore(alertDiv, container.firstChild);
+                
+                // Auto-dismiss after 5 seconds
+                setTimeout(() => {
+                    const bsAlert = new bootstrap.Alert(alertDiv);
+                    bsAlert.close();
+                }, 5000);
+            }
+        }
+    });
+</script>
+{% endblock %}

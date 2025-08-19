@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>مرحبا {{ user.username }} — اختر وجهتك</h2>
+  <a href="{% url 'home' %}"><button>عرض الدروس</button></a>
+  <a href="{% url 'admin_dashboard' %}"><button>لوحة تحكم الأدمن</button></a>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>إضافة سؤال للاختبار: {{ test.title }}</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label>نص السؤال (اختياري):</label>
+      {{ form.text }}
+    </div>
+    <div class="mb-3">
+      <label>صورة السؤال (اختياري، PNG/JPG):</label>
+      {{ form.image }}
+    </div>
+    <div class="mb-3">
+      <label>الاختيارات (افصل بينها بفاصلة):</label>
+      {{ form.choices }}
+    </div>
+    <div class="mb-3">
+      <label>رقم الإجابة الصحيحة (1 أو 2 أو 3 أو 4):</label>
+      {{ form.correct_answer }}
+    </div>
+    <button class="btn btn-primary" type="submit">حفظ السؤال</button>
+  </form>
+  <p class="mt-3"><a href="{% url 'admin_dashboard' %}">العودة للوحة التحكم</a></p>
+{% endblock %}

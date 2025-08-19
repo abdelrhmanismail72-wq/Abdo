@@ -1,0 +1,67 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .student-card {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background: #fff;
+        box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    }
+    .student-card h3 {
+        margin-top: 0;
+        color: #333;
+    }
+    .student-card p {
+        margin: 5px 0;
+        color: #666;
+    }
+    .view-attempts-btn {
+        display: inline-block;
+        padding: 6px 12px;
+        background: #417690;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-top: 10px;
+    }
+    .view-attempts-btn:hover {
+        background: #205067;
+    }
+    .no-students {
+        padding: 20px;
+        text-align: center;
+        color: #666;
+        font-size: 16px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>{% trans 'درجات الطلاب' %}</h1>
+    
+    {% if users %}
+        <div class="module">
+            {% for user in users %}
+                <div class="student-card">
+                    <h3>{{ user.get_full_name|default:user.username }}</h3>
+                    <p>اسم المستخدم: {{ user.username }}</p>
+                    <p>البريد الإلكتروني: {{ user.email|default:'-' }}</p>
+                    <a href="?user_id={{ user.id }}" class="view-attempts-btn">
+                        عرض الاختبارات والدرجات
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-students">
+            <p>لا يوجد طلاب لديهم محاولات اختبار حتى الآن.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

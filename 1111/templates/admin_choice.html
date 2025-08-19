@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  .my-button {
+      font-family: "Segoe UI","sans-serif";
+      font-size: 11pt;
+      background:#3498db; 
+      color:#e0e0e0;
+      border:0;
+      border-radius:8px;
+      padding:10px 20px;
+      float: right;
+      cursor:pointer;
+      transition:background .3s;
+    }
+</style>  
+<h2>أهلاً بك، أدمن</h2>
+  <p>اختر إلى أين تريد الذهاب:</p>
+  <div>
+    <a  href="{% url 'admin_dashboard' %}"><button class="my-button">الذهاب إلى الداشبورد</button></a><br><br><br>
+    <a href="http://192.168.4.3:8000/admin"><button class="my-button">الذهاب إلى الداشبورد المعقده</button></a><br><br><br>
+    <a href="{% url 'home' %}"><button class="my-button">الذهاب إلى صفحة الدروس</button></a>
+  </div>
+{% endblock %}
